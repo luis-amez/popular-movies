@@ -1,5 +1,9 @@
 apply plugin: 'com.android.application'
 
+def apiKeyPropertiesFile = rootProject.file("api-key.properties")
+def apiKeyProperties = new Properties()
+apiKeyProperties.load(new FileInputStream(apiKeyPropertiesFile))
+
 android {
     compileSdkVersion 28
     defaultConfig {
@@ -9,6 +13,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        buildConfigField("String", "THE_MOVIE_DB_API_KEY", apiKeyProperties["THE_MOVIE_DB_API_KEY"])
     }
     buildTypes {
         release {
