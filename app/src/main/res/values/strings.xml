@@ -4,4 +4,7 @@
     <!-- Menu -->
     <string name="most_popular">Most Popular</string>
     <string name="top_rated">Top Rated</string>
+
+    <!-- Error -->
+    <string name="error_loading">Something went wrong, try again later.</string>
 </resources>
