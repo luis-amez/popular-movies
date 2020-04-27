@@ -5,6 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.luisamez.popularmovies.BuildConfig;
 import com.luisamez.popularmovies.R;
@@ -29,11 +31,14 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
     private MoviesAdapter adapter;
     private MovieDBAPIService service;
     private List<Movie> movies;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        progressBar = findViewById(R.id.progress_circular);
+        moviesGrid = findViewById(R.id.movies_grid);
         service = RetrofitInstance.getRetrofitInstance().create(MovieDBAPIService.class);
         showMostPopularMovies();
     }
@@ -46,6 +51,8 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        moviesGrid.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
         if (item.getItemId() == R.id.action_most_popular) {
             showMostPopularMovies();
             return true;
@@ -98,7 +105,8 @@ public class MainActivity extends AppCompatActivity implements MoviesAdapter.Mov
     }
 
     public void setRecyclerView(List<Movie> movies) {
-        moviesGrid = findViewById(R.id.movies_grid);
+        progressBar.setVisibility(View.GONE);
+        moviesGrid.setVisibility(View.VISIBLE);
         moviesGrid.setHasFixedSize(true);
         adapter = new MoviesAdapter(movies, /* onClickListener */ this);
         moviesGrid.setAdapter(adapter);
