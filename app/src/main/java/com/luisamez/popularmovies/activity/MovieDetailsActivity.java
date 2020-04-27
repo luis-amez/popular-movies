@@ -36,7 +36,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if (intent != null) {
             if (intent.hasExtra(INTENT_EXTRA_MOVIE)) {
-                Movie movie = (Movie) intent.getSerializableExtra(INTENT_EXTRA_MOVIE);
+                Movie movie = intent.getParcelableExtra(INTENT_EXTRA_MOVIE);
                 titleView.setText(movie.getTitle());
                 PicassoLoader.loadImage(movie.getPosterPath(), posterView);
                 releaseDateView.setText(movie.getReleaseDate());
