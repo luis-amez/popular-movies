@@ -6,23 +6,25 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.luisamez.popularmovies.R;
 import com.luisamez.popularmovies.model.Movie;
-import com.squareup.picasso.Picasso;
+import com.luisamez.popularmovies.utils.PicassoLoader;
 
 import java.util.List;
 
 /**
  * RecyclerView adapter for {@link Movie}.
- * */
+ */
 public final class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewHolder> {
+
+    private final MovieClickListener onClickListener;
 
     private List<Movie> movies;
 
-    public MoviesAdapter(List<Movie> movies) {
+    public MoviesAdapter(List<Movie> movies, MovieClickListener onClickListener) {
         this.movies = movies;
+        this.onClickListener = onClickListener;
     }
 
     @NonNull
@@ -46,25 +48,27 @@ public final class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.Movi
         return movies.size();
     }
 
-    class MovieViewHolder extends RecyclerView.ViewHolder {
+    public interface MovieClickListener {
+        void onMovieClick(int movieIndex);
+    }
 
-        private final String BASE_URL = "https://image.tmdb.org/t/p/";
-        private final String IMAGE_SIZE = "w500";
+    class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private ImageView posterView;
 
         public MovieViewHolder(@NonNull View itemView) {
             super(itemView);
             posterView = itemView.findViewById(R.id.card_image);
+            itemView.setOnClickListener(this);
         }
 
         void bind(int movieIndex) {
-            String posterPath = new StringBuilder()
-                    .append(BASE_URL)
-                    .append(IMAGE_SIZE)
-                    .append(movies.get(movieIndex).getPosterPath())
-                    .toString();
-            Picasso.get().load(posterPath).into(posterView);
+            PicassoLoader.loadImage(movies.get(movieIndex).getPosterPath(), posterView);
+        }
+
+        @Override
+        public void onClick(View v) {
+            onClickListener.onMovieClick(getAdapterPosition());
         }
     }
 }

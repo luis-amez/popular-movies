@@ -1,5 +1,6 @@
-package com.luisamez.popularmovies.view;
+package com.luisamez.popularmovies.activity;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -12,7 +13,7 @@ import com.luisamez.popularmovies.model.APICallResults;
 import com.luisamez.popularmovies.model.Movie;
 import com.luisamez.popularmovies.network.MovieDBAPIService;
 import com.luisamez.popularmovies.network.RetrofitInstance;
-import com.luisamez.popularmovies.view.AutofitRecyclerView;
+import com.luisamez.popularmovies.utils.AutofitRecyclerView;
 
 import java.util.List;
 
@@ -20,11 +21,14 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MoviesAdapter.MovieClickListener {
+
+    public static final String INTENT_EXTRA_MOVIE = "Movie";
 
     private AutofitRecyclerView moviesGrid;
     private MoviesAdapter adapter;
     private MovieDBAPIService service;
+    private List<Movie> movies;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,12 +56,21 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onMovieClick(int movieIndex) {
+        if (movies != null) {
+            Intent intent = new Intent(/* context */ this, MovieDetailsActivity.class);
+            intent.putExtra(INTENT_EXTRA_MOVIE, movies.get(movieIndex));
+            startActivity(intent);
+        }
+    }
+
     public void showMostPopularMovies() {
         Call<APICallResults> call = service.getPopularMovies(BuildConfig.THE_MOVIE_DB_API_KEY);
         call.enqueue(new Callback<APICallResults>() {
             @Override
             public void onResponse(Call<APICallResults> call, Response<APICallResults> response) {
-                List<Movie> movies = response.body().getMovies();
+                movies = response.body().getMovies();
                 setRecyclerView(movies);
             }
 
@@ -73,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
         call.enqueue(new Callback<APICallResults>() {
             @Override
             public void onResponse(Call<APICallResults> call, Response<APICallResults> response) {
-                List<Movie> movies = response.body().getMovies();
+                movies = response.body().getMovies();
                 setRecyclerView(movies);
             }
 
@@ -87,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
     public void setRecyclerView(List<Movie> movies) {
         moviesGrid = findViewById(R.id.movies_grid);
         moviesGrid.setHasFixedSize(true);
-        adapter = new MoviesAdapter(movies);
+        adapter = new MoviesAdapter(movies, /* onClickListener */ this);
         moviesGrid.setAdapter(adapter);
     }
 }

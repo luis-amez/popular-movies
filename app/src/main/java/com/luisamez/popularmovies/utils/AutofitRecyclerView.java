@@ -1,4 +1,4 @@
-package com.luisamez.popularmovies.view;
+package com.luisamez.popularmovies.utils;
 
 import android.content.Context;
 import android.content.res.TypedArray;

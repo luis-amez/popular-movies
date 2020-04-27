@@ -2,10 +2,12 @@ package com.luisamez.popularmovies.model;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 /**
  * Model to store the relevant fields of the movie JSON object from The Movie DB API.
  * */
-public final class Movie {
+public final class Movie implements Serializable {
 
     @SerializedName("original_title")
     private String title;
